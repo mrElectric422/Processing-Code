@@ -1,0 +1,91 @@
+int originY = 50;
+int originX = 250;
+int meridian = originX;
+int originL = 175;
+float originRad = 45;
+float colorNum = 0;
+
+float colorMax = 0;
+float colorMin = 300;
+float originColor = colorMax;
+
+float generation = 0;
+int maxGen = 7;
+float population = 0;
+
+float lGen = 0;
+float radGen = 0;
+//float[] yVal = new float[];
+
+float[] yVal= {originY, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+float xLoc = 0;
+
+int modifier = 1;
+float stepY = originY;
+
+void setup() {
+  yVal[0] = originY;
+  colorMode(HSB, 359, 100, 359);
+  size(500, 500); 
+  smooth();
+  background(300, 0, 359);
+  stroke(originColor, 0, originColor);
+  fill(originColor, 0, originColor);
+  //ellipse(originX, originY, originRad, originRad);
+  
+  for(int i = 1; i < maxGen+1; i++){
+      lGen = originL*pow(0.5, i-1);
+      yVal[i] = stepY+(lGen*0.5*(sqrt(3)));
+      stepY = yVal[i];
+  }
+  
+}
+
+void draw() {
+  for(int r = maxGen; r > 0; r--){
+    radGen = originRad*pow(0.5, r);
+    lGen = originL*pow(0.5, r-1);
+    population = pow(2, r);
+    colorNum = (colorMax-colorMin)/(population);
+    drawRow(lGen, population, r, radGen);
+  }
+  
+  
+  fill(0, 0, originColor);
+  stroke(0, 0, originColor);
+
+textSize(32);
+fill(originColor, 0, originColor);
+//text(mouseX, 10, 50);
+//text(mouseY, 10, 100);
+
+ellipse(originX, originY, originRad, originRad);
+
+}
+
+
+void drawRow(float l, float pop, int g, float rad){
+
+  for(int i = 0; i < pop/2; i++){
+    xLoc = meridian+(i*l)+(l/2);
+    fill(0, 0, 179+(0.5*colorNum)-(i*colorNum));
+    stroke(0, 0, 179+(0.5*colorNum)-(i*colorNum));
+    if(g == 1){
+      line(xLoc, yVal[g], xLoc+(-modifier*l/2), yVal[g-1]);
+    } else {
+      line(xLoc, yVal[g], xLoc+(modifier*l/2), yVal[g-1]);
+    }
+    ellipse(xLoc, yVal[g], rad, rad);
+    modifier = modifier*-1;
+  }
+  
+  for(int i = 0; i < pop/2; i++){
+    fill(0, 0, 179+((i+1)*colorNum));
+    stroke(0, 0, 179+((i+1)*colorNum));
+    xLoc = meridian-(i*l)-(l/2);
+    line(xLoc, yVal[g], xLoc-(modifier*l/2), yVal[g-1]);
+    ellipse(xLoc, yVal[g], rad, rad);
+    modifier = modifier*-1;
+  }
+
+}
